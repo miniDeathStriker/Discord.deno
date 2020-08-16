@@ -1,37 +1,23 @@
-## Welcome to GitHub Pages
+## Discord.deno
 
-You can use the [editor on GitHub](https://github.com/miniDeathStriker/Discord.deno/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+Discord.deno is a wrapper for the [discord API](https://discord.com/developers/docs) Using and made for the Deno runtime
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Aiming to keep a similar syntax to the well known Discord.js<br>
+Join us on [discord!](https://discord.gg/UjvN7Yg)
 
-### Markdown
+### Example
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+Here is a basic bot example made using Discord.deno
 
-```markdown
-Syntax highlighted code block
+```ts
+import { Client } from "https://deno.land/x/discorddeno@VERSION_HERE/index.ts"
+let client = new Client( { disableMentions: true } );
 
-# Header 1
-## Header 2
-### Header 3
+client.on("message", (message) => {
+  console.log(message);
+}
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+client.login(TOKEN);
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/miniDeathStriker/Discord.deno/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+More info coming soon!

@@ -50,6 +50,10 @@ export class Client extends EventEmitter {
     }
 }
 
+
+/*
+    EXAMPLE
+*/
 const client = new Client({disableMentions:false})
 client.ws.on("message", (msg:any) => {
     let data = JSON.parse(msg)
@@ -59,4 +63,4 @@ client.ws.on("message", (msg:any) => {
     if(data.op === 10)heartBeat(data.d.heartbeat_interval || 41250, client)
     console.log(data.op)
 })
-client.login("NzQzNDAwNTEwMTg2NTg2MjIy.XzUHrQ.iKSdOlyTfYPVxqphO79N41SQlOI")
+client.login("")

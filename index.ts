@@ -1,8 +1,10 @@
 /// <reference path="./lib.deno.d.ts" />
-import { WebSocket } from "./modules/deno-websocket/mod.ts"
-import { Request } from "./modules/request/request.ts"
+import { WebSocket } from "./modules/deno-websocket/mod.ts";
+import { Request } from "./modules/request/request.ts";
 import EventEmitter from "./modules/events/mod.ts";
-import { heartBeat } from "./utils/heartbeat.ts"
+import { heartBeat } from "./utils/heartbeat.ts";
+import { ev } from "./structures/events/main.ts";
+
 export class Client extends EventEmitter {
     options = {};
     guilds = {}
@@ -43,24 +45,47 @@ export class Client extends EventEmitter {
                         $os: "Windows",
                         $browser: "Discord.deno",
                         $device: "Discord.deno"
-                      }
+                      },
+                      compress: true,
+                      presence: {
+                          game: {
+                              name: "Mini code Discord.deno",
+                              type: 3
+                          }
+                      },
+                      status: "dnd"
                     }
             }))
+            this.ws.on("message", (msg:any) => {
+                let data = JSON.parse(msg)
+                if(data.op === 10)return heartBeat(data.d.heartbeat_interval || 41250, this)
+                if(data.op === 0){
+                    let event = snakeToPascal(data.t.toLowerCase());
+                    try{
+                        ev.emit(event)
+                    }catch(e){ return }
+                }
+            })
+            this.ws.on("close", (d:any,d2:any) => {
+                console.log("Websocket Connection closed: " + d)
+            })
+            this.ws.on("error", (e:any) => {
+                console.log("Websocket Connection error: "+ e)
+            })
         })
     }
 }
 
+const client = new Client({});
 
-/*
-    EXAMPLE
-*/
-const client = new Client({disableMentions:false})
-client.ws.on("message", (msg:any) => {
-    let data = JSON.parse(msg)
-    console.log(data.op)
-    if(data.op !== 10 && data.op !== 11)return
-    console.log(data)
-    if(data.op === 10)heartBeat(data.d.heartbeat_interval || 41250, client)
-    console.log(data.op)
-})
-client.login("")
+client.login("NzQzNDAwNTEwMTg2NTg2MjIy.XzUHrQ.J3VZ6YftkSkzYS5O4KSg0o-gWyQ")
+
+const snakeToPascal = (string:string) => {
+    return string.split("/")
+      .map(snake => snake.split("_")
+        .map(substr => substr.charAt(0)
+          .toUpperCase() +
+          substr.slice(1))
+        .join(""))
+      .join("/");
+  };

@@ -76,10 +76,6 @@ export class Client extends EventEmitter {
     }
 }
 
-const client = new Client({});
-
-client.login("NzQzNDAwNTEwMTg2NTg2MjIy.XzUHrQ.J3VZ6YftkSkzYS5O4KSg0o-gWyQ")
-
 const snakeToPascal = (string:string) => {
     return string.split("/")
       .map(snake => snake.split("_")

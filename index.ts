@@ -2,7 +2,7 @@
 import { WebSocket } from "./modules/deno-websocket/mod.ts"
 import { Request } from "./modules/request/request.ts"
 import EventEmitter from "./modules/events/mod.ts";
-
+import { heartBeat } from "./utils/heartbeat.ts"
 export class Client extends EventEmitter {
     options = {};
     guilds = {}
@@ -32,13 +32,31 @@ export class Client extends EventEmitter {
         this.token = token
 
         this.ws.on("open", () => {
+            // this.ws.send(JSON.stringify({
+            //     op: 10
+            // }))
             this.ws.send(JSON.stringify({
-                op: 10,
-                d: {
-                    heartbeat_interval: 45000
-                }
+                    op: 2,
+                    d: {
+                      token: this.token,
+                      properties: {
+                        $os: "Windows",
+                        $browser: "Discord.deno",
+                        $device: "Discord.deno"
+                      }
+                    }
             }))
-            
         })
     }
 }
+
+const client = new Client({disableMentions:false})
+client.ws.on("message", (msg:any) => {
+    let data = JSON.parse(msg)
+    console.log(data.op)
+    if(data.op !== 10 && data.op !== 11)return
+    console.log(data)
+    if(data.op === 10)heartBeat(data.d.heartbeat_interval || 41250, client)
+    console.log(data.op)
+})
+client.login("NzQzNDAwNTEwMTg2NTg2MjIy.XzUHrQ.iKSdOlyTfYPVxqphO79N41SQlOI")

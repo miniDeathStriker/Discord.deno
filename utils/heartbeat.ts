@@ -1,9 +1,9 @@
 import { Client } from "../index.ts";
 
-export function heartBeat(){
+export function heartBeat(interval:number, client:Client){
     setInterval(() => {
-        Client.prototype.ws.send(JSON.stringify({
-            
+        client.ws.send(JSON.stringify({
+            op: 11
         }))
-    }, 45*1000 /* 45 seconds */)
+    }, interval/* 45 seconds */)
 }

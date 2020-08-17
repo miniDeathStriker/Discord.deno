@@ -1,9 +1,8 @@
 /// <reference path="./lib.deno.d.ts" />
 import { WebSocket } from "./modules/deno-websocket/mod.ts";
-import { Request } from "./modules/request/request.ts";
 import EventEmitter from "./modules/events/mod.ts";
 import { heartBeat } from "./utils/heartbeat.ts";
-import { ev } from "./structures/events/main.ts";
+import { emit } from "./structures/events/main.ts";
 
 export class Client extends EventEmitter {
     options = {};
@@ -61,9 +60,7 @@ export class Client extends EventEmitter {
                 if(data.op === 10)return heartBeat(data.d.heartbeat_interval || 41250, this)
                 if(data.op === 0){
                     let event = snakeToPascal(data.t.toLowerCase());
-                    try{
-                        ev.emit(event)
-                    }catch(e){ return }
+                    emit(event, this, data)
                 }
             })
             this.ws.on("close", (d:any,d2:any) => {
@@ -75,6 +72,10 @@ export class Client extends EventEmitter {
         })
     }
 }
+
+const client = new Client({})
+
+client.login("")
 
 const snakeToPascal = (string:string) => {
     return string.split("/")
